@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuaColab - Registro</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='register.css') }}">
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <div class="logo">🌙 LuaColab</div>
+                <p class="subtitle">Crea tu cuenta</p>
+            </div>
+            
+            <form class="register-form" action="/register" method="POST">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="usuario" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Correo</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group"> 
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div class="form-group"> 
+                    <label for="confirm_password">Confirmar Contraseña</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+                
+                <button type="submit" class="register-btn">
+                    <span class="btn-text">Registrarse</span>
+                </button>
+            </form>
+            
+            <div class="register-footer">
+                <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='register.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Ejecutor Lua Seguro</title>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<header>
+		<div class="logo" onclick="goToLogin()">🌙 LuaColab</div>
+		<button class="menu-toggle" onclick="toggleSidebar()" title="Menú">☰</button>
+		<nav class="menu">
+			<button type="button">Archivo</button>
+			<button type="button">Editar</button>
+			<button type="button">Ver</button>
+			<button type="button">Insertar</button>
+			<button type="button">Entorno de Ejecución</button>
+		</nav>
+		<div class="header-icons">
+			<button class="icon-button" title="Comentarios">💬</button>
+			<button class="icon-button" title="Configuración" onclick="goToAdmin()">⚙️</button>
+			<button class="share-button" type="button">Compartir</button>
+			<button class="icon-button" title="Terminal" onclick="toggleTerminal()">🖥️</button>
+		</div>
+	</header>
+
+	<div class="layout" style="min-height: 0;">	
+		<aside class="sidebar" id="sidebar">
+			<div class="sidebar-tabs">
+				<button class="collapse-btn sidebar-tab active"  onclick="toggleSidebar()" onclick="switchTab('files')">Archivos</button>
+				<button class="collapse-btn sidebar-tab" onclick="toggleSidebar()" onclick="switchTab('variables')">Variables</button>
+				<button class="collapse-btn sidebar-tab" onclick="toggleSidebar()">◀</button>
+			</div>
+
+			<div class="sidebar-content" id="files-tab">
+				<div class="file-explorer">
+					<div class="directory-item" onclick="selectDirectory(this)" data-path="/proyecto">
+						<span class="file-icon">📁</span>
+						<span class="file-name">proyecto/</span>
+					</div>
+					<div class="directory-item" onclick="selectFile(this)" data-path="/proyecto/main.lua">
+						<span class="file-icon">🌙</span>
+						<span class="file-name">main.lua</span>
+					</div>
+					<div class="directory-item" onclick="selectFile(this)" data-path="/proyecto/utils.lua">
+						<span class="file-icon">🌙</span>
+						<span class="file-name">utils.lua</span>
+					</div>
+					<div class="directory-item" onclick="selectDirectory(this)" data-path="/proyecto/lib">
+						<span class="file-icon">📁</span>
+						<span class="file-name">lib/</span>
+					</div>
+					<div class="directory-item" onclick="selectFile(this)" data-path="/proyecto/lib/math_ext.lua">
+						<span class="file-icon">🌙</span>
+						<span class="file-name">math_ext.lua</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="sidebar-content hidden" id="variables-tab">
+				<div style="font-size: 0.8rem; color: var(--text-light-alt);">
+					<div style="margin-bottom: 0.5rem;">
+						<strong>Variables Globales:</strong>
+					</div>
+					<div style="margin-left: 1rem;">
+						• x = 42<br>
+						• name = "LuaColab"<br>
+						• pi = 3.14159<br>
+					</div>
+				</div>
+			</div>
+		</aside>
+
+		<main>
+			<div class="cells-container" id="cells-container">
+				<h1>Ejecutar código Lua (sandbox)</h1>				
+				<div class="insert-line" onclick="addCodeCell(this)">
+					<span class="insert-buttons">
+				  		<button class="new-button" title="Agregar nueva celda">Nuevo</button>
+					</span>
+				</div>
+			  	<div class="code-cell">
+				    <div class="input-prompt">[1]</div>
+				    <div class="cell-controls">
+						<button class="cell-button run-button" title="Ejecutar">▶</button>
+						<button class="cell-button" title="Eliminar" onclick="deleteCell(this)">🗑</button>
+				    </div>
+				    <textarea class="code-area" placeholder="print('Hola desde Lua')" style="color: #ffffff;"></textarea>
+				    <pre class="output"></pre>
+			  	</div>
+			  	<div class="insert-line" onclick="addCodeCell(this)">
+					<span class="insert-buttons">
+						<button class="new-button" title="Agregar nueva celda">Nuevo</button>
+					</span>
+			  	</div>
+			</div>
+			<div class="abajo">
+				<div class="linea-terminal">
+					<span class="prompt">[/>]:</span>
+					<span class="entrada" contenteditable="true"></span>
+				</div>
+			</div>
+		</main>
+	</div>
+	<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

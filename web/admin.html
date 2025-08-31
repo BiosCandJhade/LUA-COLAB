@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuaColab - Panel de Administración</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='admin.css') }}">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo">🌙 LuaColab Admin</div>
+            <div class="user-info">
+                <span id="currentUser">Administrador</span>
+                <a href="{{ url_for('logout') }}" id="logoutBtn" class="logout-btn">Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="dashboard">
+                    📊 Dashboard
+                </button>
+                <button class="nav-item" data-tab="visits">
+                    👥 Registro de Visitas
+                </button>
+                <button class="nav-item" data-tab="ips">
+                    🌐 Direcciones IP
+                </button>
+                <button class="nav-item" data-tab="resources">
+                    💾 Recursos del Sistema
+                </button>
+                <button class="nav-item" data-tab="limits">
+                    ⚙️ Límites de Ejecución
+                </button>
+                <button class="nav-item" data-tab="users">
+                    👤 Gestión de Usuarios
+                </button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>Usuarios Activos</h3>
+                            <p id="activeUsers">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌐</div>
+                        <div class="stat-info">
+                            <h3>IPs Únicas</h3>
+                            <p id="uniqueIPs">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💾</div>
+                        <div class="stat-info">
+                            <h3>Memoria Usada</h3>
+                            <p id="memoryUsed">0 MB</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <h3>CPU Usado</h3>
+                            <p id="cpuUsed">0%</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <h3>Actividad Reciente</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visits Tab -->
+            <div id="visits" class="tab-content">
+                <h2>Registro de Visitas</h2>
+                <div class="table-container">
+                    <table id="visitsTable">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>IP</th>
+                                <th>Fecha</th>
+                                <th>Duración</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitsTableBody">
+                            <!-- Datos dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- IPs Tab -->
+            <div id="ips" class="tab-content">
+                <h2>Direcciones IP</h2>
+                <div class="table-container">
+                    <table id="ipsTable">
+                        <thead>
+                            <tr>
+                                <th>IP</th>
+                                <th>País</th>
+                                <th>Ciudad</th>
+                                <th>Última Visita</th>
+                                <th>Visitas Totales</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ipsTableBody">
+                            <!-- Datos dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div id="resources" class="tab-content">
+                <h2>Recursos del Sistema</h2>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>Memoria del Sandbox</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="memoryProgress"></div>
+                        </div>
+                        <p id="memoryText">0 MB / 512 MB</p>
+                        <div class="resource-controls">
+                            <button class="btn-secondary" onclick="adjustMemory(-64)">-64MB</button>
+                            <button class="btn-secondary" onclick="adjustMemory(64)">+64MB</button>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>CPU del Sandbox</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="cpuProgress"></div>
+                        </div>
+                        <p id="cpuText">0% / 100%</p>
+                        <div class="resource-controls">
+                            <button class="btn-secondary" onclick="adjustCPU(-10)">-10%</button>
+                            <button class="btn-secondary" onclick="adjustCPU(10)">+10%</button>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>Procesos Activos</h3>
+                        <div class="process-list" id="processList">
+                            <!-- Lista de procesos -->
+                        </div>
+                        <button class="btn-primary" onclick="refreshProcesses()">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Limits Tab -->
+            <div id="limits" class="tab-content">
+                <h2>Límites de Ejecución</h2>
+                <form id="limitsForm" class="limits-form">
+                    <div class="form-group">
+                        <label for="maxChars">Caracteres Máximos (main.lua)</label>
+                        <input type="number" id="maxChars" name="maxChars" value="10000" min="1000" max="100000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxExecutionTime">Tiempo Máximo de Ejecución (segundos)</label>
+                        <input type="number" id="maxExecutionTime" name="maxExecutionTime" value="30" min="5" max="300">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxMemoryUsage">Uso Máximo de Memoria (MB)</label>
+                        <input type="number" id="maxMemoryUsage" name="maxMemoryUsage" value="512" min="64" max="2048">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxCpuUsage">Uso Máximo de CPU (%)</label>
+                        <input type="number" id="maxCpuUsage" name="maxCpuUsage" value="100" min="10" max="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxFileSize">Tamaño Máximo de Archivo (KB)</label>
+                        <input type="number" id="maxFileSize" name="maxFileSize" value="1024" min="100" max="10000">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Guardar Límites</button>
+                </form>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-content">
+                <h2>Gestión de Usuarios</h2>
+                <div class="users-actions">
+                    <button class="btn-primary" onclick="showAddUserModal()">Agregar Usuario</button>
+                    <button class="btn-secondary" onclick="refreshUsers()">Actualizar</button>
+                </div>
+                
+                <div class="table-container">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Memoria Asignada</th>
+                                <th>CPU Asignada</th>
+                                <th>IP</th>
+                                <th>Último Acceso</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Datos dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para agregar usuario -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Nuevo Usuario</h3>
+                <button class="close-btn" onclick="closeAddUserModal()">&times;</button>
+            </div>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="newUserName">Nombre de Usuario</label>
+                    <input type="text" id="newUserName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserPassword">Contraseña</label>
+                    <input type="password" id="newUserPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserMemory">Memoria Asignada (MB)</label>
+                    <input type="number" id="newUserMemory" value="512" min="64" max="2048">
+                </div>
+                <div class="form-group">
+                    <label for="newUserCPU">CPU Asignada (%)</label>
+                    <input type="number" id="newUserCPU" value="100" min="10" max="100">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeAddUserModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Agregar Usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>

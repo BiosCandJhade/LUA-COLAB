@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuaColab - Login</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='login.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">🌙 LuaColab</div>
+                <p class="subtitle">Acceso al Sistema</p>
+            </div>
+            
+            <form class="login-form" action="/login" method="POST">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" name="usuario" required>
+                </div>
+                
+                <div class="form-group"> 
+                    <label for="password">Contraseña</label>
+                    <input type="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Iniciar Sesión</span>
+                </button>
+                <div class="accesos">                    
+                    <a href="/" class="login-btn volver" style="margin-left:0">
+                        <span>Volver</span>
+                    </a>
+                    <a href="/register" class="login-btn volver">
+                        <span>Registrarse</span>
+                    </a>
+                </div>
+            </form>
+            
+            <div class="login-footer">
+                <p>¿Problemas para acceder? Contacta al administrador</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='login.js') }}"></script>
+</body>
+</html>
