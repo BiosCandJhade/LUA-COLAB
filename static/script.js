@@ -19,7 +19,7 @@ document.querySelectorAll('.code-area').forEach(textarea => {
     textarea.style.height = textarea.scrollHeight + 'px';
   });
 });
-
+/*
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   sidebar.classList.toggle('open');
@@ -38,6 +38,24 @@ function toggleSidebar() {
   } else {
     overlay.classList.remove('open');
   }
+}*/
+/*
+function toggleSidebar() {
+  const sidebar = document.querySelector('aside.sidebar');
+  sidebar.classList.toggle('collapsed');
+}
+*/
+function toggleSidebar() {
+  /*const sidebar = document.getElementById('aside.sidebar');*/
+  const sidebar = document.querySelector('aside.sidebar');
+  sidebar.classList.toggle('collapsed');
+
+  // Elimina selección visual si sidebar se colapsa
+  if (sidebar.classList.contains('collapsed')) {
+    document.querySelectorAll('.directory-item.selected').forEach(item => {
+      item.classList.remove('selected');
+    });
+  }
 }
 
 function switchTab(tabName) {
@@ -53,6 +71,30 @@ function switchTab(tabName) {
   activeButton.classList.add('active');
 }
 
+
+
+let justSelected = false;
+
+function selectDirectory(element) {
+  document.querySelectorAll('.directory-item').forEach(item => {
+    item.classList.remove('selected');
+  });
+  element.classList.add('selected');
+  justSelected = true;
+  setTimeout(() => { justSelected = false }, 100); // breve protección
+  console.log('Directorio seleccionado:', element.dataset.path);
+}
+
+function selectFile(element) {
+  document.querySelectorAll('.directory-item').forEach(item => {
+    item.classList.remove('selected');
+  });
+  element.classList.add('selected');
+  justSelected = true;
+  setTimeout(() => { justSelected = false }, 100);
+  console.log('Archivo seleccionado:', element.dataset.path);
+}
+/*
 function selectDirectory(element) {
   document.querySelectorAll('.directory-item').forEach(item => {
     item.classList.remove('selected');
@@ -67,19 +109,21 @@ function selectFile(element) {
   });  
   element.classList.add('selected');  
   console.log('Archivo seleccionado:', element.dataset.path);
-}
+}*/
 
+/*
 function toggleTerminal() {
   const terminal = document.querySelector('.abajo');
   if (terminal) {
     terminal.style.display = terminal.style.display === 'none' ? 'block' : 'none';
   }
 }
-
-function toggleSidebar() {
-  const sidebar = document.querySelector('aside.sidebar');
-  sidebar.classList.toggle('collapsed');
+*/
+function toggleTerminal() {
+  const wrapper = document.querySelector('.abajo');
+  wrapper.classList.toggle('collapsed');
 }
+
 
 
 function addCodeCell(afterElement) {
@@ -146,33 +190,6 @@ function renumerarCeldas() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.addEventListener('click', function(e) {
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.querySelector('.collapse-btn');
-    
-    if (window.innerWidth <= 768 && 
-        sidebar && 
-        sidebar.classList.contains('open') && 
-        !sidebar.contains(e.target) && 
-        !sidebarToggle.contains(e.target)) {
-      sidebar.classList.remove('open');
-      const overlay = document.querySelector('.sidebar-overlay');
-      if (overlay) {
-        overlay.classList.remove('open');
-      }
-    }
-  });
-  
-  window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.querySelector('.sidebar-overlay');
-      if (sidebar) sidebar.classList.remove('open');
-      if (overlay) overlay.classList.remove('open');
-    }
-  });
-});
 
 function goToLogin() {
     window.location.href = '/login';
@@ -229,46 +246,6 @@ terminal.addEventListener('focusout', (e) => {
   }
 });
 
-document.addEventListener('keydown', (e) => {
-  const ultEntrada = terminal.querySelector('.linea-terminal:last-child .entrada');
-
-  if (e.key === 'Escape') {
-    terminalActiva = false;
-    terminal.style.height = "12vh";
-  }
-
-  if (e.key === 'Tab' && ultEntrada && e.target.classList.contains('entrada')) {
-    e.preventDefault();
-
-    const sel = window.getSelection();
-    const range = sel.getRangeAt(0);
-
-    const tabNode = document.createTextNode('    ');
-    range.insertNode(tabNode);
-
-    // mover cursor al final de los espacios insertados
-    range.setStartAfter(tabNode);
-    range.setEndAfter(tabNode);
-
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-
-  if (e.key === 'Tab' && e.target.classList.contains('code-area')) {
-    e.preventDefault();
-
-    const textarea = e.target;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-
-    textarea.value =
-      textarea.value.substring(0, start) +
-      '    ' +
-      textarea.value.substring(end);
-
-    textarea.selectionStart = textarea.selectionEnd = start + 4;
-  }
-});
 
 terminal.addEventListener('click', (e) => {
   const ultEntrada = terminal.querySelector('.linea-terminal:last-child .entrada');
@@ -319,3 +296,152 @@ function ajustarAltura() {
 if (terminal.querySelectorAll('.linea-terminal').length === 0) {
   crearLinea();
 }
+
+
+/*===========================================
+DOCUMENT.ADDEVENTLISTENER
+===========================================*/
+
+document.addEventListener('click', function (event) {
+  if (justSelected) return;
+
+  const clickedItem = event.target.closest('.directory-item');
+  const selectedItem = document.querySelector('.directory-item.selected');
+
+  if (!selectedItem) return;
+
+  if (!clickedItem || clickedItem === selectedItem) {
+    selectedItem.classList.remove('selected');
+  }
+});
+document.addEventListener('keydown', function (event) {
+  const sidebar = document.querySelector('aside.sidebar');
+  if (sidebar.classList.contains('collapsed')) return;
+
+  const items = Array.from(document.querySelectorAll('.directory-item'));
+  const selected = document.querySelector('.directory-item.selected');
+  if (!items.length) return;
+
+  let index = items.indexOf(selected);
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    index = index < items.length - 1 ? index + 1 : 0;
+    items.forEach(item => item.classList.remove('selected'));
+    items[index].classList.add('selected');
+    items[index].scrollIntoView({ block: 'nearest' });
+  }
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    index = index > 0 ? index - 1 : items.length - 1;
+    items.forEach(item => item.classList.remove('selected'));
+    items[index].classList.add('selected');
+    items[index].scrollIntoView({ block: 'nearest' });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.querySelector('.collapse-btn');
+    
+    if (window.innerWidth <= 768 && 
+        sidebar && 
+        sidebar.classList.contains('open') && 
+        !sidebar.contains(e.target) && 
+        !sidebarToggle.contains(e.target)) {
+      sidebar.classList.remove('open');
+      const overlay = document.querySelector('.sidebar-overlay');
+      if (overlay) {
+        overlay.classList.remove('open');
+      }
+    }
+  });
+  
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+      if (sidebar) sidebar.classList.remove('open');
+      if (overlay) overlay.classList.remove('open');
+    }
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  const ultEntrada = terminal.querySelector('.linea-terminal:last-child .entrada');
+
+  if (e.key === 'Escape') {
+    terminalActiva = false;
+    terminal.style.height = "12vh";
+  }
+
+  if (e.key === 'Tab' && ultEntrada && e.target.classList.contains('entrada')) {
+    e.preventDefault();
+
+    const sel = window.getSelection();
+    const range = sel.getRangeAt(0);
+
+    const tabNode = document.createTextNode('    ');
+    range.insertNode(tabNode);
+
+    // mover cursor al final de los espacios insertados
+    range.setStartAfter(tabNode);
+    range.setEndAfter(tabNode);
+
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  if (e.key === 'Tab' && e.target.classList.contains('code-area')) {
+    e.preventDefault();
+
+    const textarea = e.target;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    textarea.value =
+      textarea.value.substring(0, start) +
+      '    ' +
+      textarea.value.substring(end);
+
+    textarea.selectionStart = textarea.selectionEnd = start + 4;
+  }
+});
+/*
+document.addEventListener('click', function (event) {
+  const clickedItem = event.target.closest('.directory-item');
+  const selectedItem = document.querySelector('.directory-item.selected');
+
+  if (selectedItem && clickedItem !== selectedItem) {
+    selectedItem.classList.remove('selected');
+  }
+
+  if (clickedItem === selectedItem) {
+    selectedItem.classList.remove('selected');
+  }
+});
+*/
+/*
+
+document.addEventListener('click', function (event) {
+  const clickedItem = event.target.closest('.directory-item');
+  const selectedItem = document.querySelector('.directory-item.selected');
+
+  // Si no hay nada seleccionado, no hacemos nada
+  if (!selectedItem) return;
+
+  // Si se hace clic fuera de cualquier .directory-item
+  if (!clickedItem) {
+    selectedItem.classList.remove('selected');
+    return;
+  }
+
+  // Si se hace clic en el mismo elemento seleccionado
+  if (clickedItem === selectedItem) {
+    selectedItem.classList.remove('selected');
+    return;
+  }
+});
+*/

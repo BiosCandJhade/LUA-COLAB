@@ -63,7 +63,7 @@ textarea {
 
 aside.sidebar {
   background-color: var(--bg-sidebar);
-  width: 480px;
+  width: 200px;
   padding: 1rem 0;
   display: flex;
   flex-direction: row;
@@ -75,22 +75,27 @@ aside.sidebar {
 }
 
 .sidebar.collapsed {
-  width: 48px;
+  width: 30px;
 }
 
 .sidebar-tabs {
   flex-direction: column;
   display: flex;
   border-bottom: 1px solid #2a2e46;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .sidebar-tab {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 1;
   background: none;
   border: none;
   color: var(--text-light-alt);
-  padding: 0.5rem;
+  padding: 0.75rem;
   cursor: pointer;
   font-size: 0.75rem;
   transition: all 0.2s;
@@ -106,20 +111,28 @@ aside.sidebar {
 }
 
 .sidebar-content {
+  overflow-x: hidden;
   flex: 1;
   overflow-y: auto;
   padding: 0 0.5rem;
 }
-
+/*
 main {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
   background-color: var(--bg-dark);
-  padding: 0.8rem 1rem 1.4rem 1rem; /*maldito mainnnnnnnnn*/
-}
+  padding: 0.8rem 1rem 1.4rem 1rem;
+}*/
 
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0.8rem 1rem 0 1rem;
+}
+/*ERA EL MALDITO DEL MAIN EL QUE LIMITABA EL */
 /* ======================
    HEADER
 ====================== */
@@ -231,7 +244,7 @@ nav.menu button:focus {
   height: 10px;
   border-radius: 4px;
   cursor: pointer;
-  display: flex;
+  display: absolute;
   align-items: center;
   justify-content: center;
   font-size: 0.7rem;
@@ -350,6 +363,7 @@ pre.output {
 /* ======================
    CONTAINERS Y UTILITIES
 ====================== */
+/*
 .cells-container {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -357,7 +371,14 @@ pre.output {
   flex-direction: column;
   max-height: calc(100vh - 20vh);
   scrollbar-width: none;
+}*/
+
+.cells-container {
+  flex: 1;
+  overflow-y: auto;
 }
+
+
 
 .input-prompt {
   color: var(--accent-purple);
@@ -397,7 +418,7 @@ pre.output {
 .abajo {
   margin-left: -1rem;       /* ignora padding-left */
   margin-right: -1rem;      /* ignora padding-right */
-  margin-bottom: -1.4rem;   /* ignora padding-bottom */
+  margin-bottom: 0;   /* ignora padding-bottom */
   width: calc(100% + 2rem); /* ancho compensado */
   position: relative; 
   height: 12vh;	
@@ -416,6 +437,26 @@ pre.output {
   scrollbar-width: none;
   /*white-space: pre-wrap;*/
   word-break: break-word;
+  background-color: var(--bg-darker);
+}
+
+.abajo.collapsed {
+  height: 0 !important;
+  padding: 0 !important;
+  border: none;
+  overflow: hidden;
+}
+
+/*===============
+ TERMINAL
+*/===============
+.terminal-wrapper {
+  transition: height 0.3s ease;
+  overflow: hidden;
+}
+
+.terminal-wrapper .collapsed{
+  height: 0;
 }
 
 .abajo::-webkit-scrollbar {
@@ -450,12 +491,6 @@ pre.output {
 /* ======================
    SIDEBAR Y EXPLORADOR DE ARCHIVOS
 ====================== */
-.sidebar-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 0.5rem;
-}
-
 .sidebar-content.hidden {
   display: none;
 }
@@ -518,684 +553,4 @@ pre.output {
 .menu-toggle:focus {
   outline: 2px solid var(--accent-purple);
   outline-offset: 2px;
-}
-
-/* ======================
-   RESPONSIVE PARA CELULARES
-====================== */
-@media (max-width: 768px) {
-  body {
-    overflow-x: hidden;
-    font-size: 0.95rem;
-  }
-
-  .layout {
-    flex-direction: column;
-    height: auto;
-    min-height: 100vh;
-  }
-
-  header {
-    justify-content: space-between;
-    padding: 0 0.75rem;
-    height: 60px;
-    position: relative;
-  }
-
-  .logo {
-    font-size: 1.4rem;
-    flex-shrink: 0;
-  }
-
-  .menu-toggle {
-    display: block;
-    order: 1;
-  }
-
-  .logo {
-    order: 0;
-  }
-
-  nav.menu {
-    order: 2;
-  }
-
-  .header-icons {
-    order: 3;
-  }
-
-  nav.menu {
-    display: none;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background-color: var(--bg-darker);
-    flex-direction: column;
-    gap: 0;
-    padding: 0;
-    border-top: 1px solid #2a2e46;
-    z-index: 1001;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  nav.menu.open {
-    display: flex;
-  }
-
-  nav.menu button {
-    padding: 1rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid #2a2e46;
-    width: 100%;
-    font-size: 1rem;
-  }
-
-  nav.menu button:last-child {
-    border-bottom: none;
-  }
-
-  .menu-toggle {
-    display: block;
-    background: none;
-    border: none;
-    color: var(--text-light);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    margin-right: 0.5rem;
-  }
-
-  .menu-toggle:focus {
-    outline: 2px solid var(--accent-purple);
-    outline-offset: 2px;
-  }
-
-  /* Header icons ajustados para móviles */
-  .header-icons {
-    gap: 0.5rem;
-    flex-shrink: 0;
-  }
-
-  .icon-button {
-    width: 42px;
-    height: 42px;
-    font-size: 1.1rem;
-  }
-
-  .share-button {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-    white-space: nowrap;
-  }
-
-  /* Sidebar como panel deslizable completo */
-  aside.sidebar {
-    position: fixed;
-    top: 60px;
-    left: -100%;
-    height: calc(100vh - 60px);
-    width: 100%;
-    max-width: 320px;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    border-right: none;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.3);
-    transform: translateZ(0);
-  }
-
-  .sidebar.open {
-    left: 0;
-    transform: translateZ(0);
-  }
-
-  /* Botón de colapso del sidebar */
-  .collapse-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background-color: var(--icon-button-bg);
-    border: none;
-    color: var(--text-light);
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    z-index: 1002;
-  }
-
-  .collapse-btn:hover {
-    background-color: var(--icon-button-hover-bg);
-  }
-
-  /* Tabs del sidebar optimizados para móviles */
-  .sidebar-tabs {
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 0 1rem;
-    margin-top: 3rem;
-    margin-bottom: 1rem;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .sidebar-tab {
-    flex: 0 0 auto;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    min-width: 100px;
-    text-align: center;
-  }
-
-  /* Contenido del sidebar */
-  .sidebar-content {
-    padding: 0 1rem;
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Explorador de archivos móvil */
-  .file-explorer {
-    padding: 0.5rem 0;
-  }
-
-  .directory-item {
-    padding: 0.75rem;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    border: 1px solid transparent;
-  }
-
-  .directory-item:hover {
-    background-color: var(--bg-darker-alt);
-    border-color: var(--accent-purple);
-  }
-
-  .directory-item.selected {
-    background-color: var(--accent-purple);
-    color: white;
-  }
-
-  .file-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-
-  .file-name {
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-
-  /* Tab de variables */
-  #variables-tab {
-    padding: 1rem;
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-
-  /* Main content ajustado para móviles */
-  main {
-    padding: 0.75rem;
-    overflow-x: hidden;
-    flex: 1;
-    min-height: calc(100vh - 60px);
-  }
-
-  /* Contenedor de celdas */
-  .cells-container {
-    max-height: none;
-    overflow-y: visible;
-    padding-bottom: 1rem;
-  }
-
-  /* Título principal */
-  .cells-container h1 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    color: var(--accent-purple);
-  }
-
-  /* Celdas de código móviles */
-  .code-cell {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-  }
-
-  .code-cell textarea {
-    height: 80px;
-    font-size: 0.9rem;
-    padding: 0.75rem;
-    border-radius: 6px;
-    background-color: var(--bg-darker);
-    border: 1px solid #2a2e46;
-  }
-
-  .code-cell textarea:focus {
-    outline: 2px solid var(--accent-purple);
-    outline-offset: 2px;
-  }
-
-  /* Controles de celda siempre visibles en móviles */
-  .cell-controls {
-    opacity: 1;
-    position: static;
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    justify-content: flex-end;
-  }
-
-  .cell-button {
-    width: 36px;
-    height: 36px;
-    font-size: 0.9rem;
-    border-radius: 6px;
-  }
-
-  /* Prompt de entrada */
-  .input-prompt {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-    color: var(--accent-purple);
-    font-weight: 600;
-  }
-
-  /* Líneas de inserción */
-  .insert-line {
-    height: 40px;
-    border-top: 2px dashed var(--accent-purple);
-    margin: 1rem 0;
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .insert-buttons {
-    position: static;
-    transform: none;
-    display: block;
-  }
-
-  .insert-buttons button {
-    background-color: var(--accent-purple);
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-  }
-
-  .insert-buttons button:hover {
-    background-color: var(--accent-light-purple);
-  }
-
-  /* Output de código */
-  pre.output {
-    font-size: 0.85rem;
-    padding: 0.75rem;
-    margin-top: 0.75rem;
-    border-radius: 6px;
-    background-color: var(--terminal-bg);
-    color: var(--terminal-text);
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  /* Terminal inferior */
-  .abajo {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: auto;
-    border-radius: 12px 12px 0 0;
-    margin: 0;
-    padding: 1rem;
-    z-index: 999;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
-    border: none;
-    background-color: var(--bg-darker);
-  }
-
-  .abajo span:first-child {
-    color: var(--accent-purple);
-    font-weight: 600;
-    margin-right: 0.5rem;
-  }
-
-  .abajo span[contenteditable] {
-    color: var(--text-light);
-    outline: none;
-    min-height: 1.2em;
-    display: inline-block;
-    width: calc(100% - 3rem);
-  }
-
-  /* Overlay para cuando el sidebar está abierto */
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    backdrop-filter: blur(2px);
-    transition: opacity 0.3s ease;
-  }
-
-  .sidebar-overlay.open {
-    display: block;
-    opacity: 1;
-  }
-
-  /* Mejorar transición del sidebar */
-  aside.sidebar {
-    position: fixed;
-    top: 60px;
-    left: -100%;
-    height: calc(100vh - 60px);
-    width: 100%;
-    max-width: 320px;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    border-right: none;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.3);
-    transform: translateZ(0);
-  }
-
-  .sidebar.open {
-    left: 0;
-    transform: translateZ(0);
-  }
-
-  /* Ajustes para pantallas muy pequeñas */
-  @media (max-width: 480px) {
-    header {
-      padding: 0 0.5rem;
-    }
-
-    .logo {
-      font-size: 1.2rem;
-    }
-
-    .icon-button {
-      width: 38px;
-      height: 38px;
-    }
-
-    .share-button {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.75rem;
-    }
-
-    aside.sidebar {
-      max-width: 100%;
-    }
-
-    .code-cell {
-      padding: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .code-cell textarea {
-      height: 70px;
-      font-size: 0.85rem;
-    }
-
-    .cell-button {
-      width: 32px;
-      height: 32px;
-    }
-
-    .insert-line {
-      height: 36px;
-      margin: 0.75rem 0;
-    }
-
-    .insert-buttons button {
-      width: 36px;
-      height: 36px;
-      font-size: 1.1rem;
-    }
-
-    .abajo {
-      padding: 0.75rem;
-    }
-
-    /* Ajustar tabs del sidebar en pantallas muy pequeñas */
-    .sidebar-tabs {
-      padding: 0 0.5rem;
-    }
-
-    .sidebar-tab {
-      padding: 0.5rem 0.75rem;
-      font-size: 0.8rem;
-      min-width: 80px;
-    }
-
-    /* Ajustar explorador de archivos */
-    .directory-item {
-      padding: 0.5rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .file-icon {
-      font-size: 1rem;
-    }
-
-    .file-name {
-      font-size: 0.8rem;
-    }
-  }
-
-  /* Ajustes para pantallas ultra pequeñas */
-  @media (max-width: 360px) {
-    .logo {
-      font-size: 1rem;
-    }
-
-    .icon-button {
-      width: 32px;
-      height: 32px;
-      font-size: 0.9rem;
-    }
-
-    .share-button {
-      padding: 0.3rem 0.6rem;
-      font-size: 0.7rem;
-    }
-
-    .code-cell {
-      padding: 0.5rem;
-    }
-
-    .code-cell textarea {
-      height: 60px;
-      font-size: 0.8rem;
-    }
-
-    .cell-button {
-      width: 28px;
-      height: 28px;
-      font-size: 0.8rem;
-    }
-
-    .insert-buttons button {
-      width: 32px;
-      height: 32px;
-      font-size: 1rem;
-    }
-
-    .sidebar-tab {
-      padding: 0.4rem 0.6rem;
-      font-size: 0.75rem;
-      min-width: 70px;
-    }
-  }
-
-  /* Ajustes para orientación landscape en móviles */
-  @media (max-width: 768px) and (orientation: landscape) {
-    header {
-      height: 50px;
-    }
-
-    aside.sidebar {
-      top: 50px;
-      height: calc(100vh - 50px);
-    }
-
-    .sidebar-content {
-      padding: 0 0.75rem;
-    }
-
-    .code-cell {
-      padding: 0.75rem;
-    }
-
-    .code-cell textarea {
-      height: 60px;
-    }
-
-    /* Ajustar altura del header en landscape */
-    .logo {
-      font-size: 1.2rem;
-    }
-
-    .icon-button {
-      width: 36px;
-      height: 36px;
-    }
-
-    /* Reducir padding en landscape */
-    main {
-      padding: 0.5rem;
-    }
-
-    .cells-container h1 {
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-    }
-  }
-
-  /* Mejoras de accesibilidad para móviles */
-  .code-cell:focus-within {
-    border-color: var(--accent-purple);
-    box-shadow: 0 0 0 2px rgba(170, 110, 215, 0.2);
-  }
-
-  /* Scroll suave para elementos internos */
-  .sidebar-content,
-  .cells-container,
-  pre.output {
-    scroll-behavior: smooth;
-  }
-
-  /* Indicadores visuales para elementos interactivos */
-  .directory-item:active,
-  .cell-button:active,
-  .insert-buttons button:active {
-    transform: scale(0.95);
-    transition: transform 0.1s;
-  }
-
-  /* Mejoras de accesibilidad para móviles */
-  .code-cell:focus-within {
-    border-color: var(--accent-purple);
-    box-shadow: 0 0 0 2px rgba(170, 110, 215, 0.2);
-  }
-
-  /* Scroll suave para elementos internos */
-  .sidebar-content,
-  .cells-container,
-  pre.output {
-    scroll-behavior: smooth;
-  }
-
-  /* Mejoras para elementos táctiles */
-  .sidebar-tab,
-  .directory-item,
-  .cell-button,
-  .icon-button,
-  .insert-buttons button {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  /* Feedback visual mejorado para toques */
-  .sidebar-tab:active,
-  .directory-item:active {
-    background-color: var(--accent-purple);
-    color: white;
-    transform: scale(0.98);
-  }
-
-  /* Ajustes para el área de toque */
-  .cell-button,
-  .icon-button {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  .sidebar-tab {
-    min-height: 48px;
-  }
-
-  .directory-item {
-    min-height: 52px;
-  }
-
-  /* Mejor contraste para elementos importantes */
-  .input-prompt {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-
-  .code-cell textarea::placeholder {
-    color: var(--text-light-alt);
-    opacity: 0.7;
-  }
-
-  /* Indicadores de estado para elementos interactivos */
-  .run-button {
-    background-color: var(--green-dark);
-    color: white;
-  }
-
-  .run-button:hover {
-    background-color: var(--green-teal);
-  }
-
-  /* Mejoras para el terminal inferior */
-  .abajo {
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  .abajo span[contenteditable] {
-    -webkit-user-select: text;
-    user-select: text;
-    word-break: break-word;
-  }
 }
