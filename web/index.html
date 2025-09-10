@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Ejecutor Lua Seguro</title>
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css') }}">
+	<link rel="icon" type="image/png" href="{{url_for('static',filename='favicon.png')}}">
 </head>
 <body>
 	<header>
@@ -26,14 +27,19 @@
 	</header>
 
 	<div class="layout" style="min-height: 0;">	
-		<aside class="sidebar" id="sidebar">
+		<aside class="sidebar collapsed" id="sidebar">
 			<div class="sidebar-tabs">
-				<button class="collapse-btn sidebar-tab active"  onclick="toggleSidebar()" onclick="switchTab('files')">Archivos</button>
-				<button class="collapse-btn sidebar-tab" onclick="toggleSidebar()" onclick="switchTab('variables')">Variables</button>
+				<button class="collapse-btn sidebar-tab" onclick="switchTab('files')">Rutas</button>
+				<div class="separator"></div>
+				<button class="collapse-btn sidebar-tab" onclick="switchTab('variables')">Variables</button>
+				<div class="separator"></div>			
+				<button class="collapse-btn sidebar-tab">Documentación</button>
+				<div class="separator"></div>			
 				<button class="collapse-btn sidebar-tab" onclick="toggleSidebar()">◀</button>
 			</div>
+			<div class="sidebar-box"></div>	
 
-			<div class="sidebar-content" id="files-tab">
+			<div class="sidebar-content hidden" id="files-tab">
 				<div class="file-explorer">
 					<div class="directory-item" onclick="selectDirectory(this)" data-path="/proyecto">
 						<span class="file-icon">📁</span>
@@ -57,19 +63,20 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="sidebar-content hidden" id="variables-tab">
-				<div style="font-size: 0.8rem; color: var(--text-light-alt);">
+				<div class="file-explorer">
 					<div style="margin-bottom: 0.5rem;">
 						<strong>Variables Globales:</strong>
 					</div>
-					<div style="margin-left: 1rem;">
-						• x = 42<br>
-						• name = "LuaColab"<br>
-						• pi = 3.14159<br>
+					<div>
+					  <div class="directory-var">• x = 42</div>
+					  <div class="directory-var">• name = "LuaColab"</div>
+					  <div class="directory-var">• pi = 3.14159</div>
 					</div>
 				</div>
 			</div>
+
+
 		</aside>
 
 		<main>

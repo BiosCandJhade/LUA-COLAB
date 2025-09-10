@@ -39,6 +39,7 @@ body {
   width: 100vw;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   overflow-x: hidden;
 }
 
@@ -64,10 +65,8 @@ textarea {
 aside.sidebar {
   background-color: var(--bg-sidebar);
   width: 200px;
-  padding: 1rem 0;
   display: flex;
   flex-direction: row;
-  flex-shrink: 0;
   user-select: none;
   border-right: 1px solid #2a2e46;
   position: relative;
@@ -75,30 +74,52 @@ aside.sidebar {
 }
 
 .sidebar.collapsed {
-  width: 30px;
+  width: 25px;
+}
+
+.sidebar-box {
+  width: 25px;
+  height: 100%;
+  background: var(--icon-button-bg);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .sidebar-tabs {
-  flex-direction: column;
   display: flex;
-  border-bottom: 1px solid #2a2e46;
-  margin-bottom: 2rem;
+  flex-direction: column;
+  overflow-y: visible;
 }
 
 .sidebar-tab {
   writing-mode: vertical-rl;
   text-orientation: upright;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex: 1;
-  background: none;
+  align-items: center;
+  justify-content: flex-start;
+  background: black;
   border: none;
   color: var(--text-light-alt);
-  padding: 0.75rem;
+  /*padding: 0.5rem 1rem;*/
+  padding-right: 1rem;
+  padding-left: 0.5rem;
   cursor: pointer;
   font-size: 0.75rem;
   transition: all 0.2s;
+  flex-direction: column;
+  gap: 0;
+  /*margin-bottom: 2rem;*/
+  background-color: transparent;
+}
+
+.separator {
+  height: 1px;
+  width: 25px;
+  background: white;
+  margin: 4px 0;
+  z-index: 1;
 }
 
 .sidebar-tab.active {
@@ -112,19 +133,12 @@ aside.sidebar {
 
 .sidebar-content {
   overflow-x: hidden;
-  flex: 1;
   overflow-y: auto;
   padding: 0 0.5rem;
+  padding-left: 0;
+  align-self: stretch;
 }
-/*
-main {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  background-color: var(--bg-dark);
-  padding: 0.8rem 1rem 1.4rem 1rem;
-}*/
+
 
 main {
   display: flex;
@@ -240,22 +254,23 @@ nav.menu button:focus {
   background-color: var(--icon-button-bg);
   border: none;
   color: var(--text-light);
-  width: 10px;
-  height: 10px;
-  border-radius: 4px;
+  width: 8px;
+  /*height: 10px;*/
+  border-radius: 0;
   cursor: pointer;
-  display: absolute;
-  align-items: center;
+  display: flex;
+  align-items: left;
   justify-content: center;
   font-size: 0.7rem;
   transition: background-color 0.2s ease-in-out;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10;
+  z-index: 1;
 }
 
 .collapse-btn:hover {
   background-color: var(--icon-button-hover-bg);
+  color: var(--accent-purple);
+  border-radius: 0;
+  transform: scale(1.04);
 }
 
 /* Share button */
@@ -359,23 +374,10 @@ pre.output {
   box-sizing: border-box;
   word-wrap: break-word;
 }
-
-/* ======================
-   CONTAINERS Y UTILITIES
-====================== */
-/*
-.cells-container {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 20vh);
-  scrollbar-width: none;
-}*/
-
 .cells-container {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
 }
 
 
@@ -512,6 +514,22 @@ pre.output {
   user-select: none;
 }
 
+.directory-var {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+  user-select: none;
+  line-height: 1.4; /* asegura buena separación */
+}
+.directory-var:hover{
+  background-color: rgba(255, 255, 255 / 0.05);
+}
 .directory-item:hover {
   background-color: var(--bg-darker-alt);
   border-color: var(--accent-purple);

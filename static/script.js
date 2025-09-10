@@ -19,59 +19,59 @@ document.querySelectorAll('.code-area').forEach(textarea => {
     textarea.style.height = textarea.scrollHeight + 'px';
   });
 });
-/*
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('open');
-  let overlay = document.querySelector('.sidebar-overlay');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'sidebar-overlay';
-    overlay.onclick = function() {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('open');
-    };
-    document.body.appendChild(overlay);
-  }  
-  if (sidebar.classList.contains('open')) {
-    overlay.classList.add('open');
-  } else {
-    overlay.classList.remove('open');
-  }
-}*/
-/*
-function toggleSidebar() {
-  const sidebar = document.querySelector('aside.sidebar');
-  sidebar.classList.toggle('collapsed');
-}
-*/
-function toggleSidebar() {
-  /*const sidebar = document.getElementById('aside.sidebar');*/
-  const sidebar = document.querySelector('aside.sidebar');
-  sidebar.classList.toggle('collapsed');
 
-  // Elimina selección visual si sidebar se colapsa
+let lastActiveTab = null;
+function toggleSidebar() {
+  const sidebar = document.querySelector('aside.sidebar');
+  sidebar.classList.toggle('collapsed');
   if (sidebar.classList.contains('collapsed')) {
-    document.querySelectorAll('.directory-item.selected').forEach(item => {
-      item.classList.remove('selected');
+    const activeTab = document.querySelector('.sidebar-content:not(.hidden)');
+    if (activeTab) {
+      lastActiveTab = activeTab.id;
+      activeTab.classList.add('hidden');
+    }
+    document.querySelectorAll('.directory-item.active').forEach(item => {
+      item.classList.remove('active');
     });
+  } else {
+    if (lastActiveTab) {
+      const tabToShow = document.getElementById(lastActiveTab);
+      if (tabToShow) {
+        tabToShow.classList.remove('hidden');
+      }
+      const btnToActivate = document.querySelector(
+        `.sidebar-tab[onclick*="${lastActiveTab.replace('-tab','')}"]`
+      );
+      if (btnToActivate) {
+        btnToActivate.classList.add("active");
+      }
+    }
   }
 }
 
 function switchTab(tabName) {
+  const selectedTab = document.getElementById(tabName + '-tab');
+  const clickedButton = event.currentTarget; // el botón que disparó el click
+  if (selectedTab && !selectedTab.classList.contains('hidden') && clickedButton.classList.contains('active')) {
+    toggleSidebar()
+    return;
+  }
+
+  const sidebar = document.querySelector('aside.sidebar');
+  if (sidebar.classList.contains('collapsed')){
+    toggleSidebar();
+  }
+
   const tabs = document.querySelectorAll('.sidebar-content');
   tabs.forEach(tab => tab.classList.add('hidden'));
   const tabButtons = document.querySelectorAll('.sidebar-tab');
   tabButtons.forEach(btn => btn.classList.remove('active'));
-  const selectedTab = document.getElementById(tabName + '-tab');
   if (selectedTab) {
     selectedTab.classList.remove('hidden');
-  }  
-  const activeButton = event.target;
-  activeButton.classList.add('active');
+    lastActiveTab = selectedTab.id; // recordamos la última activa
+  }
+  clickedButton.classList.add('active');
 }
-
-
 
 let justSelected = false;
 
@@ -94,31 +94,9 @@ function selectFile(element) {
   setTimeout(() => { justSelected = false }, 100);
   console.log('Archivo seleccionado:', element.dataset.path);
 }
-/*
-function selectDirectory(element) {
-  document.querySelectorAll('.directory-item').forEach(item => {
-    item.classList.remove('selected');
-  });  
-  element.classList.add('selected');  
-  console.log('Directorio seleccionado:', element.dataset.path);
-}
 
-function selectFile(element) {
-  document.querySelectorAll('.directory-item').forEach(item => {
-    item.classList.remove('selected');
-  });  
-  element.classList.add('selected');  
-  console.log('Archivo seleccionado:', element.dataset.path);
-}*/
 
-/*
-function toggleTerminal() {
-  const terminal = document.querySelector('.abajo');
-  if (terminal) {
-    terminal.style.display = terminal.style.display === 'none' ? 'block' : 'none';
-  }
-}
-*/
+
 function toggleTerminal() {
   const wrapper = document.querySelector('.abajo');
   wrapper.classList.toggle('collapsed');
@@ -230,10 +208,43 @@ terminal.addEventListener('keydown', (e) => {
       crearLinea();
       return;
     }
+    if (comando.toLowerCase().startsWith("cd ")) {
+      const dir = comando.substring(3).trim();
+      mostrarDirectorio(dir);
+    }
     crearLinea();
-    ajustarAltura();
   }
+  ajustarAltura()
 });
+function mostrarDirectorio(dir) {
+  // Línea que muestra el "comando ejecutado"
+  const lineaCmd = document.createElement("div");
+  lineaCmd.classList.add("linea-terminal");
+
+  const prompt = document.createElement("span");
+  prompt.classList.add("prompt");
+  prompt.textContent = "[/>]:";
+
+  const salidaCmd = document.createElement("span");
+  salidaCmd.classList.add("salida-cmd");
+  salidaCmd.textContent = ` cd ${dir}`;
+
+  lineaCmd.appendChild(prompt);
+  //lineaCmd.appendChild(salidaCmd);
+  terminal.appendChild(lineaCmd);
+
+  // Línea que muestra los directorios
+  const lineaOut = document.createElement("div");
+  lineaOut.classList.add("linea-terminal", "salida");
+  lineaOut.innerHTML = `&nbsp;&nbsp;&nbsp;&nbsp;directorios_existentes: {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proyecto/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;main.lua<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;utils.lua<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lib/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;}`;
+
+  terminal.appendChild(lineaOut);
+}
 
 terminal.addEventListener('focusin', () => {
   terminalActiva = true;
@@ -257,6 +268,7 @@ terminal.addEventListener('click', (e) => {
     const sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
+    ajustarAltura();
   }
 });
 
@@ -409,39 +421,3 @@ document.addEventListener('keydown', (e) => {
     textarea.selectionStart = textarea.selectionEnd = start + 4;
   }
 });
-/*
-document.addEventListener('click', function (event) {
-  const clickedItem = event.target.closest('.directory-item');
-  const selectedItem = document.querySelector('.directory-item.selected');
-
-  if (selectedItem && clickedItem !== selectedItem) {
-    selectedItem.classList.remove('selected');
-  }
-
-  if (clickedItem === selectedItem) {
-    selectedItem.classList.remove('selected');
-  }
-});
-*/
-/*
-
-document.addEventListener('click', function (event) {
-  const clickedItem = event.target.closest('.directory-item');
-  const selectedItem = document.querySelector('.directory-item.selected');
-
-  // Si no hay nada seleccionado, no hacemos nada
-  if (!selectedItem) return;
-
-  // Si se hace clic fuera de cualquier .directory-item
-  if (!clickedItem) {
-    selectedItem.classList.remove('selected');
-    return;
-  }
-
-  // Si se hace clic en el mismo elemento seleccionado
-  if (clickedItem === selectedItem) {
-    selectedItem.classList.remove('selected');
-    return;
-  }
-});
-*/
